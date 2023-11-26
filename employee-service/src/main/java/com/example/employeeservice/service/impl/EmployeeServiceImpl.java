@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.example.employeeservice.Dto.APIResponseDto;
 import com.example.employeeservice.Dto.DepartmentDto;
 import com.example.employeeservice.Dto.EmployeeDto;
+import com.example.employeeservice.Dto.OrganizationDto;
 import com.example.employeeservice.entity.Employee;
 import com.example.employeeservice.mapper.EmployeeMapper;
 import com.example.employeeservice.repository.EmployeeRepository;
@@ -60,8 +61,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	
 	@Override
-//	@CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
-	@Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
+	@CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
+//	@Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
 	public APIResponseDto getEmployeeById(Long employeeId) {
 		
 		LOGGER.info("inside getEmployeeById() method");
@@ -73,10 +74,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 //		DepartmentDto departmentDto = responseEntity.getBody();
 		
 		DepartmentDto departmentDto = webClient.get()
-			.uri("http://localhost:8080/api/departments/" +employee.getDepartmentCode(), DepartmentDto.class)
+			.uri("http://localhost:8080/api/departments/" +employee.getDepartmentCode())
 			.retrieve()
 			.bodyToMono(DepartmentDto.class)
 			.block();
+		
+		OrganizationDto organizationDto = webClient.get()
+				.uri("http://localhost:8083/api/organizations/" +employee.getOrganizationCode())
+				.retrieve()
+				.bodyToMono(OrganizationDto.class)
+				.block();
 		
 //		DepartmentDto departmentDto = apiClient.getDepartment(employee.getDepartmentCode()); 
 		
@@ -92,6 +99,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		APIResponseDto apiResponseDto = new APIResponseDto();
 		apiResponseDto.setDepartment(departmentDto);
 		apiResponseDto.setEmployee(employeeDto);
+		apiResponseDto.setOrganization(organizationDto);
 		
 		return apiResponseDto;
 	}

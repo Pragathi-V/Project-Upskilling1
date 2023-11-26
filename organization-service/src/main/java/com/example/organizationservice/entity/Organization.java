@@ -1,6 +1,8 @@
-package com.example.employeeservice.entity;
+package com.example.organizationservice.entity;
 
-import org.apache.el.parser.AstFalse;
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,23 +15,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "employees")
-public class Employee {
+@Table(name = "organizations")
+public class Organization {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String firstName;
-	private String lastName;
+	@Column(nullable = false)
+	private String organizationName;
+	private String organizationDescription;
 	@Column(nullable = false, unique = true)
-	private String email;
-	
-	private String departmentCode;
 	private String organizationCode;
+	@CreationTimestamp
+	private LocalDateTime createdDate;
 
 }
