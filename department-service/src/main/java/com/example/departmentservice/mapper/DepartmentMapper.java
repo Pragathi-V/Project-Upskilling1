@@ -3,6 +3,7 @@ package com.example.departmentservice.mapper;
 import com.example.departmentservice.Dto.DepartmentDto;
 import com.example.departmentservice.entity.Department;
 
+
 public class DepartmentMapper {
 	
 	public static DepartmentDto mapToDepartmentDto(Department department) {
